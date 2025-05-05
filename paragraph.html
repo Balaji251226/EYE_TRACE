@@ -1,0 +1,88 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Paragraph Page</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container box paragraph">
+    <h2>📄 Paragraph for Eye Tracking</h2>
+    <p>
+      This paragraph is used to test how your eye-tracking project works. You can scroll down or read line by line. Watch how your system follows your eye movement. You can add more text here. Keep improving and keep building! Make this test page helpful for development.
+    </p>
+  </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Eye Tracking Highlight</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://webgazer.cs.brown.edu/webgazer.js"></script>
+</head>
+<body>
+    <video id="webgazerVideoFeed" autoplay style="position:fixed; right:0; bottom:0; width:200px;"></video>
+
+  <div class="container box paragraph">
+    <h2>📄 Eye Gaze Paragraph Test</h2>
+    <p>
+      This <span class="track-word">paragraph</span> is used to test your 
+      <span class="track-word">eye-tracking</span> system. When you look at a 
+      <span class="track-word">word</span>, it gets highlighted automatically.
+    </p>
+  </div>
+
+  <script>
+    window.onload = async () => {
+      await webgazer.setGazeListener((data, elapsedTime) => {
+        if (!data) return;
+
+        const x = data.x; // gaze X
+        const y = data.y; // gaze Y
+
+        // Show gaze data in console (optional)
+        console.log("Gaze X:", x, "Gaze Y:", y);
+
+        const words = document.querySelectorAll('.track-word');
+
+        words.forEach(word => {
+          const rect = word.getBoundingClientRect();
+          const wordX = rect.left + window.scrollX;
+          const wordY = rect.top + window.scrollY;
+          const width = rect.width;
+          const height = rect.height;
+
+          // If gaze is within the word box
+          if (
+            x >= wordX &&
+            x <= wordX + width &&
+            y >= wordY &&
+            y <= wordY + height
+          ) {
+            word.classList.add("highlight");
+          } else {
+            word.classList.remove("highlight");
+          }
+        });
+      }).begin();
+
+      window.onload = () => {
+  webgazer.setGazeListener((data, timestamp) => {
+    if (data) {
+      console.log("Gaze X:", data.x, "Y:", data.y);
+    }
+  }).begin()
+    .showVideoPreview(true) // Show camera preview
+    .showPredictionPoints(true) // Show red dot
+    .showFaceOverlay(true); // Show face box
+};
+
+    };
+  </script>
+</body>
+</html>
+
